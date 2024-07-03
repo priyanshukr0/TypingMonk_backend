@@ -181,7 +181,7 @@ async function login(req, res) {
                 email: populatedUserData.email,
 
             }
-            return res.cookie('auth', authToken, { httpOnly: true, secure: true, maxAge: 30 * 24 * 60 * 60 * 1000 }).
+            return res.cookie('auth', authToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 30 * 24 * 60 * 60 * 1000 }).
                 status(200).json({
                     success: true,
                     message: 'User Logged in successfully',
@@ -237,7 +237,7 @@ const validateUser = async (req, res) => {
 
 const logout = async (req, res) => {
     if (req.cookies.auth) {
-        res.clearCookie('auth', { httpOnly: true, });
+        res.clearCookie('auth', { httpOnly: true, secure: true, sameSite: 'None' });
         return res.status(200).json({
             success: true,
             message: 'user logged out successfully'
@@ -266,7 +266,7 @@ async function deleteUserAccount(req, res) {
             await TypingStats.findByIdAndDelete(stats._id);
         }
         if (req.cookies.auth) {
-            res.clearCookie('auth', { httpOnly: true, secure: true })
+            res.clearCookie('auth', { httpOnly: true, secure: true, sameSite: 'None' })
         }
         return res.status(200).json({ success: true, message: 'user deleted successfully' })
     } catch (error) {

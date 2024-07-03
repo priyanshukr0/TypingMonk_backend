@@ -9,12 +9,21 @@ const scoreRoutes = require('./routes/scoreRoutes');
 const textDataRoutes = require("./routes/textDataRoute");
 const cors = require("cors");
 
-const corsOrigin = process.env.CORS_ORIGIN;
+const allowedOrigins = process.env.CORS_ORIGIN.split(',');
 // using middlewares
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-    origin: corsOrigin,
+    origin: function (origin, callback) {
+        // Check if the origin is in the allowed list
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            // If yes, allow the request
+            callback(null, true);
+        } else {
+            // If no, block the request
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
 }));
 
